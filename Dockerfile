@@ -186,6 +186,12 @@ RUN mkdir -p /opt/gophish && cd /opt/gophish && \
     printf '#!/bin/sh\ncd /opt/gophish && exec ./gophish "$@"\n' > /usr/local/bin/gophish && \
     chmod +x /usr/local/bin/gophish
 
+# httpx name collision: entr0py depends on the Python `httpx` client, whose CLI at
+# /usr/bin/httpx shadows ProjectDiscovery's scanner on PATH — so the httpx MODULE
+# ran the HTTP client, not the recon tool. Symlink the PD binary into /usr/local/bin
+# (which precedes /usr/bin in PATH) so a bare `httpx` resolves to the scanner.
+RUN ln -sf /opt/entr0py/data/go/bin/httpx /usr/local/bin/httpx
+
 # ─────────────────────────────────────────────────────────────────────────────
 #  STAGE 7 — entr0py itself
 # ─────────────────────────────────────────────────────────────────────────────

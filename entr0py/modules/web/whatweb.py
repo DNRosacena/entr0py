@@ -31,7 +31,13 @@ class WhatWeb(Module):
         ]
 
     async def run(self, opts: dict[str, Any]) -> AsyncIterator[str]:
-        cmd = ["whatweb", opts["target"], f"-a={opts.get('aggression', 1)}"]
+        # WhatWeb wants `--aggression=N` (or `-a N`); the old `-a=N` form is parsed
+        # as the literal value "=N" and rejected. Valid levels are 1, 3, 4 — there is
+        # no level 2 — so normalize anything else to 1 (stealthy).
+        level = str(opts.get("aggression", 1)).strip()
+        if level not in {"1", "3", "4"}:
+            level = "1"
+        cmd = ["whatweb", f"--aggression={level}", opts["target"]]
         if opts.get("output"):
             cmd += [f"--log-json={opts['output']}"]
         if opts.get("log_verbose"):

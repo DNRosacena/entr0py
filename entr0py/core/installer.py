@@ -133,7 +133,7 @@ _GIT_REPOS: dict[str, str] = {
 # Tools that only work on Linux/macOS — skip install entirely on Windows
 _LINUX_ONLY: set[str] = {
     "setoolkit", "aircrack", "wifite", "hcxdumptool", "kismet",
-    "netdiscover", "linpeas", "pspy", "mimikatz",
+    "netdiscover", "linpeas", "pspy",
 }
 
 # ---------------------------------------------------------------------------

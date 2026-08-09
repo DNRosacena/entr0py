@@ -1,0 +1,21 @@
+[framework]
+name    = "entr0py"
+version = "0.1.0"
+data_dir = "D:/entr0py"
+
+[ui]
+theme       = "dark"
+show_banner = true
+
+[execution]
+timeout       = 3600   # seconds per tool run
+output_buffer = 10000  # max lines kept in live output panel
+parallel_limit = 4     # max concurrent module executions
+
+[scope]
+enforce   = false  # block out-of-scope targets only when a scope has been defined
+warn_only = true   # if a scope IS defined and target is outside it, warn instead of hard-block
+
+[reporting]
+output_dir     = "D:/entr0py/reports"
+default_format = "json"   # json | html

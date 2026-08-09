@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+
+# entr0py runtime data (reports, downloaded tools/wordlists, sessions db)
+# — these are produced at runtime / bind-mounted from the host, not source
+data/
+*.db
+
+# OS / editor
+.DS_Store
+*.swp

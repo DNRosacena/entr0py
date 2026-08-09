@@ -1,0 +1,34 @@
+services:
+  entr0py:
+    build: .
+    image: entr0py:latest
+    container_name: entr0py
+
+    # ── Interactive terminal ────────────────────────────────────────────────
+    stdin_open: true
+    tty: true
+
+    # ── Environment ────────────────────────────────────────────────────────
+    environment:
+      - ENTR0PY_DATA_DIR=/opt/entr0py/data
+
+    # ── Network ────────────────────────────────────────────────────────────
+    # host mode gives tools direct access to your network interfaces.
+    # Required by: nmap, masscan, bettercap, netdiscover, aircrack, etc.
+    network_mode: host
+
+    # ── Privilege ──────────────────────────────────────────────────────────
+    # Required by: masscan, netdiscover, raw socket tools, wireless tools.
+    # Remove if you only use web/OSINT/password modules.
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+
+    # ── Volumes ────────────────────────────────────────────────────────────
+    # Reports persist on the host across container restarts. Tools are baked into
+    # the image under /opt/entr0py/data/tools — do NOT bind-mount a host dir over
+    # that path, it would shadow the bundled cupp/corsy/pspy/linpeas.
+    volumes:
+      - ./data/reports:/opt/entr0py/data/reports
+      # Optional: mount wordlists from host
+      # - ./wordlists:/opt/entr0py/entr0py/wordlists

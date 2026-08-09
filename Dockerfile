@@ -193,6 +193,29 @@ RUN mkdir -p /opt/gophish && cd /opt/gophish && \
 RUN ln -sf /opt/entr0py/data/go/bin/httpx /usr/local/bin/httpx
 
 # ─────────────────────────────────────────────────────────────────────────────
+#  STAGE 6d — Mobile static-analysis tools (apktool, dex2jar, jadx, apkleaks)
+#  APK static analysis: decode resources/smali (apktool), dex→jar (dex2jar), full
+#  decompile to Java/Kotlin (jadx), and secret/endpoint scanning (apkleaks). apktool
+#  and jadx are JVM tools, so a headless JRE is installed alongside.
+# ─────────────────────────────────────────────────────────────────────────────
+RUN retry sh -c 'apt-get update && apt-get install -y --no-install-recommends \
+      apktool dex2jar default-jre-headless \
+    && rm -rf /var/lib/apt/lists/*'
+# The dex2jar package may name its wrapper d2j-dex2jar.sh; ensure a stable
+# `d2j-dex2jar` on PATH (the module invokes that name).
+RUN command -v d2j-dex2jar >/dev/null 2>&1 || \
+    ln -sf "$(command -v d2j-dex2jar.sh)" /usr/local/bin/d2j-dex2jar
+# jadx — official CLI release zip (bin/ + lib/) → /opt/jadx, launcher on PATH
+RUN mkdir -p /opt/jadx && cd /opt/jadx && \
+    retry sh -c 'url=$(curl -fsSL https://api.github.com/repos/skylot/jadx/releases/latest \
+        | grep -oiP "\"browser_download_url\":\s*\"\K[^\"]*/jadx-[0-9][^\"]*\.zip" | head -1); \
+      test -n "$url"; curl -fsSL "$url" -o jadx.zip' && \
+    unzip -q jadx.zip && rm jadx.zip && chmod +x bin/jadx && \
+    ln -sf /opt/jadx/bin/jadx /usr/local/bin/jadx
+# apkleaks (pip) — uses jadx as its decompiler backend
+RUN retry pip install --break-system-packages apkleaks
+
+# ─────────────────────────────────────────────────────────────────────────────
 #  STAGE 7 — entr0py itself
 # ─────────────────────────────────────────────────────────────────────────────
 WORKDIR /opt/entr0py

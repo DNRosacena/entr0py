@@ -118,6 +118,7 @@ _PIP_PACKAGES: dict[str, list[str]] = {
     "wafw00f":      ["wafw00f"],
     "volatility3":  ["volatility3"],
     "wifite":       ["wifite2"],
+    "apkleaks":     ["apkleaks"],
 }
 
 # ---------------------------------------------------------------------------
@@ -171,6 +172,8 @@ _APT_PKG: dict[str, str] = {
     "searchsploit":   "exploitdb",
     "setoolkit":      "set",
     "set":            "set",
+    "apktool":        "apktool",
+    "d2j-dex2jar":    "dex2jar",
     "gem":            "ruby",
     "ruby":           "ruby",
     "cargo":          "cargo",

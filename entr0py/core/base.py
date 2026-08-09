@@ -33,6 +33,7 @@ class Category(str, Enum):
     WIRELESS     = "wireless"
     FORENSICS    = "forensics"
     SOCIAL       = "social"
+    MOBILE       = "mobile"
 
     @property
     def label(self) -> str:
@@ -47,6 +48,7 @@ class Category(str, Enum):
             "wireless":     "Wireless",
             "forensics":    "Forensics",
             "social":       "Social Engineering",
+            "mobile":       "Mobile (APK Analysis)",
         }[self.value]
 
     @property
@@ -62,6 +64,7 @@ class Category(str, Enum):
             "wireless":     "󰀂",
             "forensics":    "󰍔",
             "social":       "󰀄",
+            "mobile":       "󰀲",
         }[self.value]
 
 

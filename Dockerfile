@@ -215,6 +215,13 @@ RUN mkdir -p /opt/jadx && cd /opt/jadx && \
 # apkleaks (pip) — uses jadx as its decompiler backend
 RUN retry pip install --break-system-packages apkleaks
 
+# drozer (Android app attack-surface framework) + adb to bridge to a device/emulator
+# agent. android_payload needs nothing extra — msfvenom ships with metasploit-framework
+# (installed in Stage 1).
+RUN retry sh -c 'apt-get update && apt-get install -y --no-install-recommends adb \
+    && rm -rf /var/lib/apt/lists/*'
+RUN retry pip install --break-system-packages drozer
+
 # ─────────────────────────────────────────────────────────────────────────────
 #  STAGE 7 — entr0py itself
 # ─────────────────────────────────────────────────────────────────────────────

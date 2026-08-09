@@ -119,6 +119,7 @@ _PIP_PACKAGES: dict[str, list[str]] = {
     "volatility3":  ["volatility3"],
     "wifite":       ["wifite2"],
     "apkleaks":     ["apkleaks"],
+    "drozer":       ["drozer"],
 }
 
 # ---------------------------------------------------------------------------
@@ -169,6 +170,8 @@ _APT_PKG: dict[str, str] = {
     "nc":             "netcat-openbsd",
     "netcat":         "netcat-openbsd",
     "msfconsole":     "metasploit-framework",
+    "msfvenom":       "metasploit-framework",
+    "adb":            "adb",
     "searchsploit":   "exploitdb",
     "setoolkit":      "set",
     "set":            "set",

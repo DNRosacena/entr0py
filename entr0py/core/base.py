@@ -48,7 +48,7 @@ class Category(str, Enum):
             "wireless":     "Wireless",
             "forensics":    "Forensics",
             "social":       "Social Engineering",
-            "mobile":       "Mobile (APK Analysis)",
+            "mobile":       "Mobile (Android)",
         }[self.value]
 
     @property

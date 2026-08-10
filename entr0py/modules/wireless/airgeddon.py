@@ -1,5 +1,6 @@
 """entr0py.modules.wireless.airgeddon — Wireless auditing framework (launcher)."""
 from __future__ import annotations
+import os
 from typing import Any, AsyncIterator
 from entr0py.core.base import Category, Module, ModuleMeta, Option
 from entr0py.core.paths import TOOLS_DIR
@@ -30,7 +31,13 @@ class Airgeddon(Module):
         if not script.exists():
             yield f"[!] airgeddon not found at {script}. Run: entr0py install airgeddon"
             return
-        yield "[*] Launching airgeddon — interactive; needs root + a monitor-mode Wi-Fi adapter."
+        yield "[*] airgeddon needs root + a monitor-mode Wi-Fi adapter for real attacks."
         yield "    In Docker: run with --privileged and pass through your wireless interface."
-        async for line in self._exec(["bash", str(script)]):
+        # No X/Wayland in a container → force airgeddon's tmux windows-handling mode.
+        env = {**os.environ, "AIRGEDDON_WINDOWS_HANDLING": "tmux"}
+        # tmux needs a usable TERM (else "terminal does not support clear"); fall back
+        # to xterm-256color if the caller's terminal didn't propagate one.
+        if env.get("TERM", "") in ("", "dumb"):
+            env["TERM"] = "xterm-256color"
+        async for line in self._exec_interactive(["bash", str(script)], env=env):
             yield line

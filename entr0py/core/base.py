@@ -203,6 +203,28 @@ class Module(ABC):
         if rc not in (0, None):
             yield f"[!] {cmd[0]} exited with code {rc}"
 
+    async def _exec_interactive(
+        self,
+        cmd: list[str],
+        env:  dict[str, str] | None = None,
+    ) -> AsyncIterator[str]:
+        """
+        Run a full-screen / interactive tool attached to the current terminal.
+
+        Unlike ``_exec`` (which pipes and captures output), the child inherits our
+        stdio, so ncurses/tmux/menu programs (airgeddon, setoolkit, msfconsole, …)
+        draw directly to the terminal. We only yield start/exit markers — the tool's
+        own output is not captured. Requires a real TTY, e.g. ``docker compose run``.
+        """
+        yield f"[*] Launching {cmd[0]} — interactive, attached to your terminal."
+        try:
+            proc = await asyncio.create_subprocess_exec(*cmd, env=env)  # inherit stdio
+        except FileNotFoundError:
+            yield f"[!] Binary not found: {cmd[0]!r}. Run: entr0py install {self.meta.slug}"
+            return
+        rc = await proc.wait()
+        yield f"[*] {cmd[0]} exited (code {rc})."
+
     async def _exec_shell(
         self,
         command: str,

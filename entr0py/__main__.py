@@ -308,8 +308,17 @@ def playbook_run(
 
     async def _run() -> None:
         from entr0py.core.playbook import run_playbook
-        async for line in run_playbook(name, variables, session_id=session_id):
+        from entr0py.core import session as session_mod
+        sid = session_id
+        if sid is None:  # auto-create a session so the run is reportable
+            tgt = variables.get("target") or variables.get("domain") or ""
+            sid = await session_mod.create_session(
+                f"playbook:{name} {tgt}".strip(), [tgt] if tgt else []
+            )
+        async for line in run_playbook(name, variables, session_id=sid):
             console.print(line)
+        console.print(f"\n[dim]Session #{sid} recorded —[/] "
+                      f"[cyan]entr0py report --session {sid}[/]")
 
     asyncio.run(_run())
 
@@ -361,10 +370,27 @@ def cmd_wordlists(
 
 @cli.command("report")
 def cmd_report(
-    file: Path = typer.Argument(..., help="Output file to generate report from"),
-    fmt: str   = typer.Option("json", "--fmt", "-f", help="Report format: json | html"),
+    file: Optional[Path] = typer.Argument(None, help="Output file to report from (omit if using --session)"),
+    session_id: Optional[int] = typer.Option(None, "--session", "-s",
+                                             help="Report a whole session instead of a single file"),
+    fmt: str = typer.Option("md", "--fmt", "-f", help="Format: md | html | json"),
 ) -> None:
-    """Generate a report from a saved output file."""
+    """Generate a report — for a whole session (--session) or a single output file."""
+    if session_id is not None:
+        async def _sess() -> None:
+            from entr0py.utils.reporter import build_session_report
+            try:
+                out = await build_session_report(session_id, fmt=fmt)
+            except ValueError as exc:
+                console.print(f"[red]{exc}[/]")
+                raise typer.Exit(1)
+            console.print(f"[green][+] Session report saved to: {out}[/]")
+        asyncio.run(_sess())
+        return
+
+    if file is None:
+        console.print("[red]Provide an output file, or --session <id>.[/]")
+        raise typer.Exit(1)
     if not file.exists():
         console.print(f"[red]File not found: {file}[/]")
         raise typer.Exit(1)

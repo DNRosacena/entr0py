@@ -121,6 +121,23 @@ options = { silent = "true" }
 Modules expose their feed-forward artifacts via a `parse()` method (subfinder → hostnames,
 httpx → live URLs). Add a new playbook by dropping a `.toml` in `entr0py/playbooks/`.
 
+## Sessions & reports
+
+Runs can be grouped into a **session**, and a session rolls up into a single
+**Markdown / HTML / JSON report** — a shareable deliverable, not just scrollback. Each
+module's `parse()` feeds the report's structured findings (subfinder → hostnames, httpx →
+live URLs, nuclei → matches).
+
+```bash
+docker compose run --rm entr0py session new engagement --scope example.com   # → session #1
+docker compose run --rm entr0py run subfinder domain=example.com --session 1
+docker compose run --rm entr0py run nuclei target=https://example.com --session 1
+docker compose run --rm entr0py report --session 1 --fmt md     # → data/reports/session_1.md
+```
+
+Playbook runs create a session automatically and print the `report --session N` command to
+finish with a deliverable.
+
 ## Toolbox — 54 modules across 11 categories
 
 | Category | # | Tools |
@@ -148,9 +165,10 @@ entr0py playbook list            List multi-stage tool chains (playbooks)
 entr0py playbook run <name> k=v  Run a playbook (e.g. playbook run recon target=…)
 entr0py install <slug>           Install a module's dependencies (non-Docker hosts)
 entr0py scope add <target>       Add a target to the active scope
-entr0py session new <name>       Create a scan session
+entr0py session new <name>       Create a scan session (add runs with --session N)
 entr0py wordlists                Manage / download wordlists
-entr0py report <file> [--fmt]    Generate a report from saved output
+entr0py report --session <id>    Roll a whole session into a md/html/json report
+entr0py report <file> [--fmt]    Report from a single saved output file
 ```
 
 Every module lists its own options — run it with no required value to see them, or check the

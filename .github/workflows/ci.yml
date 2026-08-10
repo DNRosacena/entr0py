@@ -35,3 +35,18 @@ jobs:
           entr0py playbook list
           python -c "import entr0py.modules; from entr0py.core.registry import get_registry; n=len(get_registry().all()); print(f'{n} modules registered'); assert n >= 50, n"
           python -c "from entr0py.core.playbook import list_playbooks; p=list_playbooks(); print('playbooks:', list(p)); assert 'recon' in p"
+
+      - name: Smoke test — sessions + report generation
+        run: |
+          python -c "
+          import asyncio
+          from entr0py.core import session as s
+          from entr0py.utils.reporter import build_session_report
+          async def t():
+              sid = await s.create_session('ci', ['example.com'])
+              await s.finish_run(await s.start_run(sid, 'nmap', {'target': 'example.com'}), 'completed', None)
+              p = await build_session_report(sid, 'md')
+              assert p.exists(), p
+              print('report ok:', p)
+          asyncio.run(t())
+          "

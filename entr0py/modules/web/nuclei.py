@@ -74,3 +74,15 @@ class Nuclei(Module):
             cmd.append("-json")
         async for line in self._exec(cmd):
             yield line
+
+    def parse(self, lines: list[str]) -> list[str]:
+        """Extract finding lines — nuclei prints `[id] [proto] [severity] target …`."""
+        import re
+        ansi = re.compile(r"\x1b\[[0-9;]*m")
+        sev = ("[info]", "[low]", "[medium]", "[high]", "[critical]", "[unknown]")
+        out = []
+        for raw in lines:
+            s = ansi.sub("", raw).strip()
+            if s.startswith("[") and any(tag in s for tag in sev):
+                out.append(s)
+        return out

@@ -9,8 +9,8 @@ class TheHarvester(Module):
         name="theHarvester",
         slug="theharvester",
         description=(
-            "Gather emails, names, subdomains, IPs, and URLs from public sources "
-            "(Google, Bing, LinkedIn, Shodan, VirusTotal, etc)."
+            "Gather emails, subdomains, IPs, and URLs from public sources "
+            "(crt.sh, DuckDuckGo, OTX, HackerTarget, certspotter, etc)."
         ),
         category=Category.RECON,
         author="laramies",
@@ -23,8 +23,13 @@ class TheHarvester(Module):
     def options(self) -> list[Option]:
         return [
             Option("domain",  "-d", "Target domain"),
-            Option("source",  "-b", "Data source (google, bing, linkedin, all, …)",
-                   required=False, default="all"),
+            # theHarvester 4.11 dropped google/bing/linkedin, and rejects the whole run
+            # if ANY listed source is unknown. Default to keyless, supported sources;
+            # run `theHarvester -h` for the full list (some need API keys).
+            Option("source",  "-b",
+                   "Comma-separated sources (crtsh, duckduckgo, otx, hackertarget, …)",
+                   required=False,
+                   default="crtsh,duckduckgo,hackertarget,otx,rapiddns,certspotter"),
             Option("limit",   "-l", "Limit number of results",
                    type=OptionType.INTEGER, required=False, default=500),
             Option("output",  "-f", "Output filename (HTML + XML)",
@@ -35,7 +40,7 @@ class TheHarvester(Module):
         cmd = [
             "theHarvester",
             "-d", opts["domain"],
-            "-b", opts.get("source", "all"),
+            "-b", opts.get("source", "crtsh,duckduckgo,hackertarget,otx,rapiddns,certspotter"),
             "-l", str(opts.get("limit", 500)),
         ]
         if opts.get("output"):

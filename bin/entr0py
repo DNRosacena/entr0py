@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# entr0py — thin wrapper so you can type `entr0py …` instead of the full
+# `docker compose run --rm entr0py …`. Works from any directory: it always
+# uses this repo's compose file. Symlink it onto your PATH to use it anywhere:
+#
+#     ln -s "$PWD/bin/entr0py" ~/.local/bin/entr0py
+#
+set -euo pipefail
+repo="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/.." && pwd)"
+exec docker compose -f "$repo/docker-compose.yml" run --rm entr0py "$@"

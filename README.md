@@ -54,17 +54,25 @@ authors assume no liability for misuse.
 ```bash
 git clone git@github.com:DNRosacena/entr0py.git
 cd entr0py
-docker compose build                      # builds the Kali-based image (first build is large)
-docker compose run --rm entr0py           # launch the interactive TUI
+docker compose build                        # builds the Kali-based image (first build is large)
+
+# Use the `entr0py` command anywhere (thin wrapper around docker compose):
+ln -s "$PWD/bin/entr0py" ~/.local/bin/entr0py
+
+entr0py                                      # launch the interactive TUI
 ```
+
+> `bin/entr0py` just wraps `docker compose run --rm entr0py …`, so you type `entr0py list`
+> instead of the full command. If you'd rather not symlink it, run `./bin/entr0py …` from the
+> repo. Everything below uses the short form.
 
 Headless / scripted:
 
 ```bash
-docker compose run --rm entr0py list                    # list all modules
-docker compose run --rm entr0py search nmap             # search modules
-docker compose run --rm entr0py run subfinder domain=example.com
-docker compose run --rm entr0py run nuclei target=https://example.com severity=high,critical
+entr0py list                    # list all modules
+entr0py search nmap             # search modules
+entr0py run subfinder domain=example.com
+entr0py run nuclei target=https://example.com severity=high,critical
 ```
 
 > The compose service runs with `network_mode: host` and the `NET_ADMIN` / `NET_RAW`
@@ -77,17 +85,17 @@ A small recon → scan chain against a scoped target:
 
 ```bash
 # 1. Discover subdomains (passive), then find which are live
-docker compose run --rm entr0py run subfinder domain=example.com all=true
-docker compose run --rm entr0py run httpx target=https://example.com tech=true title=true
+entr0py run subfinder domain=example.com all=true
+entr0py run httpx target=https://example.com tech=true title=true
 
 # 2. Fingerprint + check for a WAF
-docker compose run --rm entr0py run whatweb target=https://example.com
-docker compose run --rm entr0py run wafw00f url=https://example.com
+entr0py run whatweb target=https://example.com
+entr0py run wafw00f url=https://example.com
 
 # 3. Vulnerability scan (rate-limited to stay gentle on production)
-docker compose run --rm entr0py run nuclei target=https://example.com severity=medium,high,critical
+entr0py run nuclei target=https://example.com severity=medium,high,critical
 
-# 4. Analyze an Android APK you own
+# 4. Analyze an Android APK you own (file inputs need the dir mounted into the container)
 docker compose run --rm -v "$PWD":/work entr0py run apkleaks apk=/work/app.apk
 ```
 
@@ -97,8 +105,8 @@ Playbooks chain modules into a pipeline, feeding each stage's parsed output into
 next — so recon → probe → scan runs as one command instead of three manual copy-pastes:
 
 ```bash
-docker compose run --rm entr0py playbook list
-docker compose run --rm entr0py playbook run recon target=example.com
+entr0py playbook list
+entr0py playbook run recon target=example.com
 ```
 
 The bundled `recon` playbook runs **`subfinder → httpx → nuclei`**: subfinder's discovered
@@ -129,10 +137,10 @@ module's `parse()` feeds the report's structured findings (subfinder → hostnam
 live URLs, nuclei → matches).
 
 ```bash
-docker compose run --rm entr0py session new engagement --scope example.com   # → session #1
-docker compose run --rm entr0py run subfinder domain=example.com --session 1
-docker compose run --rm entr0py run nuclei target=https://example.com --session 1
-docker compose run --rm entr0py report --session 1 --fmt md     # → data/reports/session_1.md
+entr0py session new engagement --scope example.com   # → session #1
+entr0py run subfinder domain=example.com --session 1
+entr0py run nuclei target=https://example.com --session 1
+entr0py report --session 1 --fmt md     # → data/reports/session_1.md
 ```
 
 Playbook runs create a session automatically and print the `report --session N` command to

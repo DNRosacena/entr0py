@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  lint-and-smoke:
+    name: Lint + smoke test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install entr0py (+ ruff)
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+          pip install ruff
+
+      - name: Lint (ruff — real errors only)
+        run: ruff check --select F,E9 .
+
+      - name: Smoke test — CLI boots, all modules import & register
+        run: |
+          entr0py --help
+          entr0py list
+          entr0py search nmap
+          python -c "import entr0py.modules; from entr0py.core.registry import get_registry; n=len(get_registry().all()); print(f'{n} modules registered'); assert n >= 50, n"

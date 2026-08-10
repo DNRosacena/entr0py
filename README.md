@@ -3,6 +3,7 @@
 <p align="center"><b>A modular, containerized penetration-testing framework.</b></p>
 
 <p align="center">
+  <a href="https://github.com/DNRosacena/entr0py/actions/workflows/ci.yml"><img src="https://github.com/DNRosacena/entr0py/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <img src="https://img.shields.io/badge/license-MIT-green" alt="MIT License">
   <img src="https://img.shields.io/badge/python-3.11%2B-blue" alt="Python 3.11+">
   <img src="https://img.shields.io/badge/docker-kali--based-2496ED" alt="Docker">

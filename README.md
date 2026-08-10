@@ -56,15 +56,20 @@ git clone git@github.com:DNRosacena/entr0py.git
 cd entr0py
 docker compose build                        # builds the Kali-based image (first build is large)
 
-# Use the `entr0py` command anywhere (thin wrapper around docker compose):
-ln -s "$PWD/bin/entr0py" ~/.local/bin/entr0py
+# Make `entr0py` available everywhere — symlink the wrapper onto your PATH:
+sudo ln -s "$PWD/bin/entr0py" /usr/local/bin/entr0py
 
 entr0py                                      # launch the interactive TUI
 ```
 
 > `bin/entr0py` just wraps `docker compose run --rm entr0py …`, so you type `entr0py list`
-> instead of the full command. If you'd rather not symlink it, run `./bin/entr0py …` from the
-> repo. Everything below uses the short form.
+> instead of the full command.
+>
+> **No sudo?** Symlink into `~/.local/bin` instead — but make sure it's on your `PATH`
+> (`echo $PATH | grep -q "$HOME/.local/bin" || echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc`).
+> **Don't want to symlink at all?** Just run `./bin/entr0py …` from the repo.
+>
+> Everything below uses the short form.
 
 Headless / scripted:
 

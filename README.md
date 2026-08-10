@@ -7,12 +7,12 @@
   <img src="https://img.shields.io/badge/license-MIT-green" alt="MIT License">
   <img src="https://img.shields.io/badge/python-3.11%2B-blue" alt="Python 3.11+">
   <img src="https://img.shields.io/badge/docker-kali--based-2496ED" alt="Docker">
-  <img src="https://img.shields.io/badge/modules-54-orange" alt="54 modules">
+  <img src="https://img.shields.io/badge/modules-55-orange" alt="55 modules">
   <img src="https://img.shields.io/badge/use-authorized%20testing%20only-red" alt="Authorized use only">
 </p>
 
 entr0py is a **meta-framework**: rather than reimplementing security tools, it orchestrates
-**54 battle-tested open-source tools** behind one consistent interface — an interactive TUI and
+**55 battle-tested open-source tools** behind one consistent interface — an interactive TUI and
 a scriptable CLI — packaged into a single reproducible **Kali-based Docker image**. Point it at a
 target, pick a tool, get streamed output. Reconnaissance through post-exploitation, plus Android
 app analysis.
@@ -29,7 +29,7 @@ session/scope management, and a portable container so it runs the same everywher
 - [⚠️ Authorized use only](#️-authorized-use-only)
 - [Quick start](#quick-start)
 - [Example workflow](#example-workflow)
-- [Toolbox](#toolbox--54-modules-across-11-categories)
+- [Toolbox](#toolbox--55-modules-across-11-categories)
 - [CLI reference](#cli-reference)
 - [Architecture](#architecture)
 - [Adding a module](#adding-a-module)
@@ -151,7 +151,7 @@ entr0py report --session 1 --fmt md     # → data/reports/session_1.md
 Playbook runs create a session automatically and print the `report --session N` command to
 finish with a deliverable.
 
-## Toolbox — 54 modules across 11 categories
+## Toolbox — 55 modules across 11 categories
 
 | Category | # | Tools |
 |---|---|---|
@@ -162,7 +162,7 @@ finish with a deliverable.
 | Passwords & Hashes | 6 | hashcat, john, hydra, crunch, cewl, cupp |
 | Exploitation | 2 | metasploit, searchsploit |
 | Post-Exploitation | 3 | linpeas, pspy, traitor |
-| Wireless | 4 | aircrack-ng, wifite, hcxdumptool, kismet |
+| Wireless | 5 | aircrack-ng, wifite, hcxdumptool, kismet, airgeddon |
 | Forensics | 5 | binwalk, foremost, exiftool, stegseek, volatility3 |
 | Social Engineering | 3 | setoolkit, gophish, evilginx2 |
 | Mobile (Android) | 6 | apktool, jadx, dex2jar, apkleaks, android_payload, drozer |

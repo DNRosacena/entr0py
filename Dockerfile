@@ -226,6 +226,16 @@ RUN retry pip install --break-system-packages drozer
 # without a first-run download. Best-effort — a scan can still `-ut` to refresh later.
 RUN retry nuclei -update-templates 2>&1 | tail -3 || true
 
+# airgeddon — wireless auditing framework (git script in TOOLS_DIR) + its runtime deps.
+# The aircrack-ng/hcx/bettercap tools it drives are already installed; add the wireless
+# glue (iw, wpasupplicant, hostapd, dnsmasq, …). Real attacks need the container run
+# with --privileged and a monitor-mode Wi-Fi adapter passed through.
+RUN retry sh -c 'apt-get update && apt-get install -y --no-install-recommends \
+      xterm ethtool iw wireless-tools wpasupplicant hostapd dnsmasq iptables net-tools \
+    && rm -rf /var/lib/apt/lists/*'
+RUN retry git clone --depth=1 https://github.com/v1s1t0r1sh3r3/airgeddon \
+      /opt/entr0py/data/tools/airgeddon
+
 # ─────────────────────────────────────────────────────────────────────────────
 #  STAGE 7 — entr0py itself
 # ─────────────────────────────────────────────────────────────────────────────

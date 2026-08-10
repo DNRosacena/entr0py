@@ -130,12 +130,13 @@ _GIT_REPOS: dict[str, str] = {
     "cupp":         "https://github.com/Mebus/cupp",
     "xsstrike":     "https://github.com/s0md3v/XSStrike",
     "searchsploit": "https://github.com/offensive-security/exploit-database",
+    "airgeddon":    "https://github.com/v1s1t0r1sh3r3/airgeddon",
 }
 
 # Tools that only work on Linux/macOS — skip install entirely on Windows
 _LINUX_ONLY: set[str] = {
     "setoolkit", "aircrack", "wifite", "hcxdumptool", "kismet",
-    "netdiscover", "linpeas", "pspy",
+    "netdiscover", "linpeas", "pspy", "airgeddon",
 }
 
 # ---------------------------------------------------------------------------

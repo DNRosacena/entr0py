@@ -50,3 +50,12 @@ class Subfinder(Module):
             cmd.append("-oJ")
         async for line in self._exec(cmd):
             yield line
+
+    def parse(self, lines: list[str]) -> list[str]:
+        """`-silent` prints one bare hostname per line."""
+        out = []
+        for raw in lines:
+            s = raw.strip()
+            if s and " " not in s and "." in s and not s.startswith(("[", "-")):
+                out.append(s)
+        return sorted(set(out))

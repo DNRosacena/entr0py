@@ -65,3 +65,17 @@ class Httpx(Module):
             cmd.append("-silent")
         async for line in self._exec(cmd):
             yield line
+
+    def parse(self, lines: list[str]) -> list[str]:
+        """Each result line starts with the live URL; strip color + trailing brackets."""
+        import re
+        ansi = re.compile(r"\x1b\[[0-9;]*m")
+        out = []
+        for raw in lines:
+            s = ansi.sub("", raw).strip()
+            if not s:
+                continue
+            url = s.split()[0]
+            if url.startswith(("http://", "https://")):
+                out.append(url)
+        return sorted(set(out))

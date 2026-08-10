@@ -32,6 +32,9 @@ entr0py = "entr0py.__main__:main_entry"
 where = ["."]
 include = ["entr0py*"]
 
+[tool.setuptools.package-data]
+entr0py = ["playbooks/*.toml"]
+
 [tool.ruff]
 target-version = "py311"
 line-length = 100

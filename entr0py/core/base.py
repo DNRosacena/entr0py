@@ -159,6 +159,14 @@ class Module(ABC):
         """
         yield f"[*] No custom install for {self.meta.name}. Run: entr0py install {self.meta.slug}"
 
+    def parse(self, lines: list[str]) -> list[str]:
+        """
+        Extract feed-forward artifacts (hosts / URLs / …) from this run's raw output,
+        so a playbook can pipe them into the next stage. Default: none — modules that
+        can feed a downstream stage (recon / probe tools) override this.
+        """
+        return []
+
     @abstractmethod
     async def run(self, opts: dict[str, Any]) -> AsyncIterator[str]:
         """Stream output lines while executing the module."""

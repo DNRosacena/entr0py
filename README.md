@@ -91,6 +91,36 @@ docker compose run --rm entr0py run nuclei target=https://example.com severity=m
 docker compose run --rm -v "$PWD":/work entr0py run apkleaks apk=/work/app.apk
 ```
 
+## Playbooks (workflow chaining)
+
+Playbooks chain modules into a pipeline, feeding each stage's parsed output into the
+next — so recon → probe → scan runs as one command instead of three manual copy-pastes:
+
+```bash
+docker compose run --rm entr0py playbook list
+docker compose run --rm entr0py playbook run recon target=example.com
+```
+
+The bundled `recon` playbook runs **`subfinder → httpx → nuclei`**: subfinder's discovered
+subdomains are piped into httpx (which keeps the live ones), and those live URLs are handed
+to nuclei to scan. Playbooks are declarative TOML (`entr0py/playbooks/*.toml`); each stage
+names a `module`, its `options` (with `{var}` placeholders filled from the CLI), and an
+optional `feed` — the option that receives the previous stage's artifacts:
+
+```toml
+[[stage]]
+module  = "subfinder"
+options = { domain = "{target}", all = "true" }
+
+[[stage]]
+module  = "httpx"
+feed    = "input"          # subfinder's hosts → httpx -l <file>
+options = { silent = "true" }
+```
+
+Modules expose their feed-forward artifacts via a `parse()` method (subfinder → hostnames,
+httpx → live URLs). Add a new playbook by dropping a `.toml` in `entr0py/playbooks/`.
+
 ## Toolbox — 54 modules across 11 categories
 
 | Category | # | Tools |
@@ -114,6 +144,8 @@ entr0py                          Launch the interactive TUI
 entr0py list [--category X]      List modules (optionally by category)
 entr0py search <query>           Search modules by name / tag / description
 entr0py run <slug> [k=v …]       Run a module headlessly (key=value options)
+entr0py playbook list            List multi-stage tool chains (playbooks)
+entr0py playbook run <name> k=v  Run a playbook (e.g. playbook run recon target=…)
 entr0py install <slug>           Install a module's dependencies (non-Docker hosts)
 entr0py scope add <target>       Add a target to the active scope
 entr0py session new <name>       Create a scan session

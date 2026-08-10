@@ -32,4 +32,6 @@ jobs:
           entr0py --help
           entr0py list
           entr0py search nmap
+          entr0py playbook list
           python -c "import entr0py.modules; from entr0py.core.registry import get_registry; n=len(get_registry().all()); print(f'{n} modules registered'); assert n >= 50, n"
+          python -c "from entr0py.core.playbook import list_playbooks; p=list_playbooks(); print('playbooks:', list(p)); assert 'recon' in p"

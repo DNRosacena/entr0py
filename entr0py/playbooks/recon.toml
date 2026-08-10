@@ -1,0 +1,27 @@
+# entr0py playbook — web recon chain
+#
+#   subfinder(domain) → [subdomains] → httpx(probe) → [live URLs] → nuclei(scan)
+#
+# Run:  entr0py playbook run recon target=example.com
+#   {target} is substituted from the CLI vars.
+
+name = "recon"
+description = "Passive subdomain discovery → live-host probing → vulnerability scan"
+
+# 1. Passive subdomain enumeration (queries public sources)
+[[stage]]
+module  = "subfinder"
+options = { domain = "{target}", all = "true" }
+
+# 2. Probe discovered hosts for live HTTP services (fed the subdomains as -l file)
+[[stage]]
+module  = "httpx"
+feed    = "input"
+options = { silent = "true", status = "true", tech = "true" }
+
+# 3. Scan the live URLs for known vulns/misconfigs (fed the URLs as -l file);
+#    rate-limited to stay gentle on the target.
+[[stage]]
+module  = "nuclei"
+feed    = "list"
+options = { severity = "medium,high,critical", rate_limit = "40" }

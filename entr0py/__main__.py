@@ -32,10 +32,12 @@ cli     = typer.Typer(
     rich_markup_mode="rich",
     no_args_is_help=False,
 )
-scope_cli   = typer.Typer(help="Manage target scope")
-session_cli = typer.Typer(help="Manage scan sessions")
-cli.add_typer(scope_cli,   name="scope")
-cli.add_typer(session_cli, name="session")
+scope_cli    = typer.Typer(help="Manage target scope")
+session_cli  = typer.Typer(help="Manage scan sessions")
+playbook_cli = typer.Typer(help="Run multi-stage tool chains (playbooks)")
+cli.add_typer(scope_cli,    name="scope")
+cli.add_typer(session_cli,  name="session")
+cli.add_typer(playbook_cli, name="playbook")
 
 
 # ---------------------------------------------------------------------------
@@ -267,6 +269,49 @@ def session_list() -> None:
         console.print(t)
 
     asyncio.run(_list())
+
+
+# ---------------------------------------------------------------------------
+# entr0py playbook
+# ---------------------------------------------------------------------------
+
+@playbook_cli.command("list")
+def playbook_list() -> None:
+    """List available playbooks (multi-stage tool chains)."""
+    from entr0py.core.playbook import list_playbooks
+    pbs = list_playbooks()
+    if not pbs:
+        console.print("[yellow]No playbooks found.[/]")
+        return
+    for pname, data in pbs.items():
+        chain = " [bright_black]→[/] ".join(
+            s.get("module", "?") for s in data.get("stage", [])
+        )
+        console.print(f"  [cyan]{pname}[/] — {data.get('description', '')}")
+        console.print(f"      [dim]{chain}[/]")
+
+
+@playbook_cli.command("run")
+def playbook_run(
+    name: str = typer.Argument(..., help="Playbook name (e.g. recon)"),
+    opts: list[str] = typer.Argument(default=[], help="key=value vars (e.g. target=example.com)"),
+    session_id: Optional[int] = typer.Option(None, "--session", "-s"),
+) -> None:
+    """Run a playbook, passing key=value vars (substituted into {placeholders})."""
+    variables: dict = {}
+    for item in opts:
+        if "=" in item:
+            k, _, v = item.partition("=")
+            variables[k.strip()] = v.strip()
+        else:
+            console.print(f"[yellow]Skipping malformed var: {item!r} (expected key=value)[/]")
+
+    async def _run() -> None:
+        from entr0py.core.playbook import run_playbook
+        async for line in run_playbook(name, variables, session_id=session_id):
+            console.print(line)
+
+    asyncio.run(_run())
 
 
 # ---------------------------------------------------------------------------

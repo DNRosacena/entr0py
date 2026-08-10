@@ -222,6 +222,10 @@ RUN retry sh -c 'apt-get update && apt-get install -y --no-install-recommends ad
     && rm -rf /var/lib/apt/lists/*'
 RUN retry pip install --break-system-packages drozer
 
+# Pre-fetch nuclei templates so scans (and the recon playbook) work out of the box
+# without a first-run download. Best-effort — a scan can still `-ut` to refresh later.
+RUN retry nuclei -update-templates 2>&1 | tail -3 || true
+
 # ─────────────────────────────────────────────────────────────────────────────
 #  STAGE 7 — entr0py itself
 # ─────────────────────────────────────────────────────────────────────────────

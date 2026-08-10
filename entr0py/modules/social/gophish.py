@@ -1,7 +1,7 @@
 """entr0py.modules.social.gophish — Open-source phishing simulation platform."""
 from __future__ import annotations
 from typing import Any, AsyncIterator
-from entr0py.core.base import Category, Module, ModuleMeta, Option, OptionType
+from entr0py.core.base import Category, Module, ModuleMeta, Option
 
 
 class Gophish(Module):

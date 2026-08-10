@@ -216,14 +216,14 @@ def module_menu(module: Module) -> None:
                 elif opt.type == OptionType.CHOICE and opt.choices:
                     for ci, ch in enumerate(opt.choices, 1):
                         console.print(f"      [bright_black][{ci}][/bright_black] {ch}")
-                    raw = console.input(f"    [yellow]>[/yellow] ").strip()
+                    raw = console.input("    [yellow]>[/yellow] ").strip()
                     if raw.isdigit() and 1 <= int(raw) <= len(opt.choices):
                         opts[opt.name] = opt.choices[int(raw) - 1]
                     else:
                         opts[opt.name] = raw or opt.default
 
                 else:
-                    raw = console.input(f"    [yellow]>[/yellow] ").strip()
+                    raw = console.input("    [yellow]>[/yellow] ").strip()
                     if not raw and opt.default is not None:
                         raw = str(opt.default)
                     if opt.type == OptionType.INTEGER:

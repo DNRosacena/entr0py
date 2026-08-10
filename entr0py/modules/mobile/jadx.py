@@ -4,7 +4,6 @@ from __future__ import annotations
 import json
 import urllib.request
 import zipfile
-from pathlib import Path
 from typing import Any, AsyncIterator
 
 from entr0py.core.base import Category, Module, ModuleMeta, Option, OptionType
@@ -54,8 +53,7 @@ class Jadx(Module):
         jadx ships as a release zip (bin/ + lib/), not a single binary — the generic
         installer can't handle it, so fetch + unpack here and drop a launcher on PATH.
         """
-        dest = TOOLS_DIR / "jadx"
-        launcher = TOOLS_DIR / "jadx"  # placeholder; real launcher written below
+        launcher = TOOLS_DIR / "jadx"  # a `jadx` launcher on PATH → the real bin
         try:
             yield "[jadx] Fetching latest release from GitHub…"
             req = urllib.request.Request(

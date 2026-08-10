@@ -11,16 +11,12 @@ Usage (CLI / TUI):
 """
 from __future__ import annotations
 
-import asyncio
-import json
-from pathlib import Path
 from typing import Any, AsyncIterator
 
 from entr0py.core import scope as scope_mod
 from entr0py.core import session as session_mod
 from entr0py.core.paths import OUTPUT_DIR
 from entr0py.core.base import Module
-from entr0py.core.config import get as get_cfg
 
 
 async def execute(
@@ -35,8 +31,6 @@ async def execute(
     - Records the run in the session DB if session_id is provided.
     - Writes output to ~/.entr0py/output/<slug>_<run_id>.txt alongside streaming.
     """
-    cfg = get_cfg()
-
     # ------------------------------------------------------------------ scope
     if module.meta.offensive:
         primary_target = opts.get(target_key) or opts.get("domain") or opts.get("url")

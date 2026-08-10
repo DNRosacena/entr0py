@@ -1,7 +1,7 @@
 """entr0py.modules.mobile.apkleaks — Scan an APK for secrets, URIs, and endpoints."""
 from __future__ import annotations
 from typing import Any, AsyncIterator
-from entr0py.core.base import Category, Module, ModuleMeta, Option, OptionType
+from entr0py.core.base import Category, Module, ModuleMeta, Option
 
 
 class Apkleaks(Module):

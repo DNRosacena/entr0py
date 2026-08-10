@@ -17,7 +17,6 @@ from __future__ import annotations
 
 import ipaddress
 import re
-from typing import Union
 
 from entr0py.core.config import get as get_cfg
 

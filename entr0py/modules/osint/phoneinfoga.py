@@ -1,7 +1,7 @@
 """entr0py.modules.osint.phoneinfoga — Phone number recon and OSINT."""
 from __future__ import annotations
 from typing import Any, AsyncIterator
-from entr0py.core.base import Category, Module, ModuleMeta, Option, OptionType
+from entr0py.core.base import Category, Module, ModuleMeta, Option
 
 
 class PhoneInfoga(Module):

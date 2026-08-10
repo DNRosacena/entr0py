@@ -1,6 +1,5 @@
 """entr0py.modules.passwords.cupp — Custom User Password Profiling."""
 from __future__ import annotations
-from pathlib import Path
 from typing import Any, AsyncIterator
 from entr0py.core.base import Category, Module, ModuleMeta, Option, OptionType
 
